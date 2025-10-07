@@ -11,51 +11,68 @@ const BookModal: React.FC<BookModalProps> = ({ book, onClose }) => {
 
   const coverUrl = book.cover_i
     ? `https://covers.openlibrary.org/b/id/${book.cover_i}-L.jpg`
-    : "https://via.placeholder.com/300x400?text=No+Cover";
+    : "https://via.placeholder.com/150x200?text=No+Cover";
+
+  const author =
+    Array.isArray(book.author_name) && book.author_name.length > 0
+      ? book.author_name.join(", ")
+      : typeof book.author_name === "string"
+      ? book.author_name
+      : "Unknown Author";
+
+  const languages =
+    book.language && Array.isArray(book.language)
+      ? book.language.join(", ")
+      : "N/A";
+
+  const publishers =
+    book.publisher && Array.isArray(book.publisher)
+      ? book.publisher.join(", ")
+      : "N/A";
 
   return (
-    <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50"
-      onClick={onClose}
-    >
-      <div
-        className="bg-white rounded-lg shadow-lg max-w-lg w-full p-6 relative"
-        onClick={(e) => e.stopPropagation()}
-      >
+    <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
+      <div className="bg-white rounded-xl shadow-2xl max-w-md w-full mx-4 relative p-6">
+        {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-2 right-2 text-gray-500 hover:text-gray-800"
+          className="absolute top-3 right-4 text-slate-600 hover:text-red-500 text-2xl"
         >
-          ✕
+          ×
         </button>
-        <div className="flex flex-col items-center">
-          <img
-            src={coverUrl}
-            alt={book.title}
-            className="w-48 h-64 object-cover mb-4"
-          />
-          <h2 className="text-xl font-bold mb-2">{book.title}</h2>
-          <p className="text-gray-700 mb-1">
-            Author: {book.author_name ? book.author_name.join(", ") : "Unknown"}
+
+        <img
+          src={coverUrl}
+          alt={book.title}
+          className="w-40 h-56 mx-auto rounded-md mb-4 object-cover"
+        />
+        <h2 className="text-2xl font-semibold text-center mb-2 text-slate-800">
+          {book.title}
+        </h2>
+        <p className="text-center text-slate-600 mb-2">
+          by <strong>{author}</strong>
+        </p>
+        {book.first_publish_year && (
+          <p className="text-center text-sm text-slate-500 mb-1">
+            First Published: {book.first_publish_year}
           </p>
-          <p className="text-gray-700 mb-1">
-            Published: {book.first_publish_year || "N/A"}
-          </p>
-          <p className="text-gray-700 mb-1">
-            Language: {book.language ? book.language.join(", ") : "N/A"}
-          </p>
-          <p className="text-gray-700 mb-1">
-            Publisher: {book.publisher ? book.publisher.join(", ") : "N/A"}
-          </p>
-          {book.read_url && (
-            <a
-              href={book.read_url}
-              target="_blank"
-              className="mt-4 bg-indigo-600 text-white px-4 py-2 rounded hover:bg-indigo-700 transition"
-            >
-              Read Online
-            </a>
-          )}
+        )}
+        <p className="text-center text-sm text-slate-500 mb-1">
+          Language: {languages}
+        </p>
+        <p className="text-center text-sm text-slate-500 mb-4">
+          Publisher: {publishers}
+        </p>
+
+        <div className="text-center">
+          <a
+            href={book.read_url || `https://openlibrary.org${book.key}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block bg-blue-600 text-white px-5 py-2 rounded-lg hover:bg-blue-700 transition"
+          >
+            Read Book
+          </a>
         </div>
       </div>
     </div>
